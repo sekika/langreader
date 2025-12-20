@@ -390,7 +390,7 @@ def generate_file(opts: Options) -> None:
 
         flush_paragraph(last_idx)
 
-        f_out.write('\n<div class="footer">Translated with LLM and HTML created by <a href="https://github.com/sekika/md-llm-lang-reader">md-llm-lang-reader</a>.</div>')
+        f_out.write('\n<div class="footer">Translated with LLM and HTML created by <a href="https://sekika.github.io/langreader/">langreader</a>.</div>')
         f_out.write("\n</body></html>")
 
     finally:

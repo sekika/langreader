@@ -1,24 +1,38 @@
-# md-llm-lang-reader
+# langreader
 
-Generate language-learning HTML readers from Markdown using an LLM:
-- sentence-by-sentence splitting + translation
-- one-click TTS playback for the source text (browser Web Speech API)
-- fenced code blocks are preserved as code (not sent to the LLM)
-
-This package is published on PyPI as `md-llm-lang-reader`, and installs the CLI command `langreader`.
+Generate interactive language-learning HTML readers from Markdown using LLMs.
 
 [![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/sekika/langreader/blob/main/README.md)
 [![ja](https://img.shields.io/badge/lang-ja-blue.svg)](https://github.com/sekika/langreader/blob/main/README-ja.md)
 [![fr](https://img.shields.io/badge/lang-fr-green.svg)](https://github.com/sekika/langreader/blob/main/README-fr.md)
 
+## 👀 Demo
+
+Before reading further, check out what this tool generates:
+
+👉 **[Live Demo: French Reader (Alsace)](https://sekika.github.io/langreader/examples/alsace.html)**
+
+---
+
+`md-llm-lang-reader` (CLI command: `langreader`) converts standard Markdown text into a bilingual HTML reader. It uses Large Language Models (via [multiai](https://github.com/sekika/multiai)) to intelligently split paragraphs into natural sentences and provide translations, while adding Text-to-Speech (TTS) capabilities to every sentence.
+
 ## Features
 
-- Markdown → HTML (simple headings + paragraphs)
-- LLM-assisted sentence splitting (natural sentence boundaries)
-- Sentence-level translations (each source sentence paired with its translation)
-- TTS button per source sentence
-- Fenced code blocks (``` or ~~~) are emitted as `<pre><code>` and are not sent to the LLM
-- Bullet lists are translated (no special handling; they are passed to the LLM as plain text)
+- 🤖 **AI-Powered Translation**: Automatically splits paragraphs into natural sentences and translates them line-by-line.
+- 🔊 **Text-to-Speech**: Built-in audio buttons for every source sentence (uses browser Web Speech API).
+- ⏯️ **Resumable Generation**: Hit an API rate limit? Use `--continue` to resume generation exactly where it stopped.
+- 📝 **Markdown Support**: Preserves headings, code blocks, and basic formatting.
+- 🌍 **Wikipedia Helper**: Includes a script to easily fetch and format Wikipedia articles for learning.
+
+## 📚 Documentation
+
+For detailed installation instructions, CLI options, and tutorials, please visit the official documentation:
+
+👉 **[https://sekika.github.io/langreader/](https://sekika.github.io/langreader/)**
+
+- [**Usage Guide**](https://sekika.github.io/langreader/usage/): Options for styling, resuming, and metadata.
+- [**Tutorial**](https://sekika.github.io/langreader/tutorial/): Step-by-step guide to creating a reader from a Wikipedia article.
+- [**TTS Setup**](https://sekika.github.io/langreader/tts/): How to configure high-quality voices on your device.
 
 ## Installation
 
@@ -26,167 +40,24 @@ This package is published on PyPI as `md-llm-lang-reader`, and installs the CLI 
 pip install md-llm-lang-reader
 ```
 
-## multiai configuration
+*Note: This tool requires [multiai](https://sekika.github.io/multiai/) configuration to access LLM providers (OpenAI, Anthropic, etc.).*
 
-This tool uses **multiai** internally to access LLM providers.
-Before using `langreader`, you must configure **multiai** for the provider and model you intend to use.
+## Quick Start
 
-Details on supported providers and configuration can be found here:
+1.  **Create a Markdown file (`input.md`)**:
+    ```markdown
+    # Bonjour
+    Ceci est un exemple de phrase pour l'apprentissage.
+    ```
 
-https://sekika.github.io/multiai/
+2.  **Run the generator**:
+    ```bash
+    langreader -i input.md -o output.html --src fr --tgt en --provider openai --model gpt-4o-mini
+    ```
 
-Please follow the instructions in the multiai documentation to complete the required setup.
-
-## Quick start
-
-Create `input.md`:
-
-```md
-# Example
-
-Bonjour ! Ceci est un court paragraphe.
-
-```python
-# Code blocks are not translated.
-print("Hello")
-```
-
-- Premier point
-- Deuxième point
-```
-
-Generate `output.html`:
-
-```bash
-langreader \
-  -i input.md \
-  -o output.html \
-  --src fr \
-  --tgt en \
-  --provider YOUR_PROVIDER \
-  --model YOUR_MODEL
-```
-
-Open the generated HTML in your browser and click the speaker buttons.
-
-## CLI usage
-
-```bash
-langreader -i INPUT.md -o OUTPUT.html --src SRC --tgt TGT --provider PROVIDER --model MODEL [-v 0|1|2|3]
-```
-
-### Options
-
-- `-i, --input` (required)  
-  Input Markdown file path.
-
-- `-o, --output` (required)  
-  Output HTML file path.
-
-- `--src` (default: `fr`)  
-  Source language code (e.g. `fr`, `de`, `es`, `ja`).
-
-- `--tgt` (default: `en`)  
-  Target language code.
-
-- `--provider` (required)  
-  Provider name passed to `multiai` (depends on your `multiai` configuration).
-
-- `--model` (required)  
-  Model name passed to `multiai`.
-
-- `-v, --verbose` (default: `1`)  
-  Controls terminal output:
-  - `0`: silent
-  - `1`: headings only
-  - `2`: paragraph preview (first ~5 words)
-  - `3`: full original paragraph text
-
-### Examples
-
-French → English:
-
-```bash
-langreader -i alsace.md -o alsace.html --src fr --tgt en --provider ... --model ...
-```
-
-German → English:
-
-```bash
-langreader -i berlin.md -o berlin.html --src de --tgt en --provider ... --model ...
-```
-
-Japanese → English:
-
-```bash
-langreader -i news.md -o news.html --src ja --tgt en --provider ... --model ...
-```
-
-## How it works
-
-For each paragraph, the tool asks the LLM to:
-
-1. Split the paragraph into natural sentences (avoid splitting on abbreviations).
-2. Translate each sentence into the target language.
-3. Return only valid JSON in this schema:
-
-```json
-[
-  { "src": "…", "tgt": "…" }
-]
-```
-
-The tool validates and parses the JSON and then generates HTML like:
-
-- source sentence + TTS button
-- translated sentence below it
-
-## Notes on Text-to-Speech (TTS)
-
-- TTS uses the browser’s Web Speech API (`speechSynthesis`).
-- Voice availability depends on the OS/browser. Some environments may have limited voices for certain languages.
-- The tool sets the utterance language to `--src` (e.g. `fr`). If you need a specific locale (e.g. `fr-FR`), you can currently edit the generated HTML (a future CLI option could expose this).
-
-## Markdown support (current)
-
-Supported:
-- Headings: `#`, `##`, `###`, `####`
-- Paragraphs: consecutive non-empty lines are joined with spaces
-- Fenced code blocks: ``` or ~~~ (any info string is allowed)
-
-Not yet supported (treated as plain text or not specially parsed):
-- Blockquotes, tables, images
-- Inline formatting (links/emphasis) is not rendered; it is passed as plain text
-
-If you need richer Markdown rendering, consider adding a Markdown parser and preserving a mapping between original text and rendered HTML.
-
-## Security
-
-This tool escapes text embedded into HTML and does not inline arbitrary text into `onclick` handlers.
-TTS buttons store text in `data-speak="..."` attributes and use JS event listeners, which is safer and avoids quoting issues.
-
-Still, treat generated HTML as untrusted if your input Markdown is untrusted.
-
-## Development
-
-Clone and install in editable mode:
-
-```bash
-pip install -e .
-```
-
-Run tests:
-
-```bash
-pytest
-```
-
-Build the package:
-
-```bash
-python -m build
-```
+3.  **Open `output.html`** in your browser to start reading and listening!
 
 ## License
 
 MIT
+

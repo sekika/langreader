@@ -16,8 +16,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/sekika/langreader"
-Documentation = "https://github.com/sekika/langreader"
+Homepage = "https://github.com/sekika/langreader/blob/main/README.md"
+Documentation = "https://sekika.github.io/langreader/"
 Source = "https://github.com/sekika/langreader"
 
 [project.scripts]

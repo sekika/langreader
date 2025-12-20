@@ -1,26 +1,38 @@
-# md-llm-lang-reader
+# langreader
 
-Markdown から「学習用のHTMLリーダー教材」を生成するツールです（LLMで文分割＋翻訳、TTSボタン付き）。
-
-- 段落を **文ごとに分割**して自然な単位で表示
-- 各文に **訳（ターゲット言語）**を付与
-- 原文（src）には **ワンクリックで読み上げ（TTS）**ボタン
-- ``` や ~~~ の **fenced code block は翻訳せず**、コードとしてそのままHTMLに出力
-
-PyPIのパッケージ名は **`md-llm-lang-reader`**、インストールされるコマンドは **`langreader`** です。
+LLMを活用し、Markdownからインタラクティブな語学学習用HTMLリーダーを生成します。
 
 [![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/sekika/langreader/blob/main/README.md)
 [![ja](https://img.shields.io/badge/lang-ja-blue.svg)](https://github.com/sekika/langreader/blob/main/README-ja.md)
 [![fr](https://img.shields.io/badge/lang-fr-green.svg)](https://github.com/sekika/langreader/blob/main/README-fr.md)
 
-## 特長
+## 👀 デモ
 
-- **Markdown → HTML**（見出し＋段落のシンプル変換）
-- **LLMによる文分割**（自然な文境界）
-- **文単位の翻訳**（原文と訳をペア表示）
-- **各文にTTSボタン**
-- **コードブロックは保持**（LLMに渡さない）
-- **箇条書きも翻訳**（特別扱いせずテキストとしてLLMに渡します）
+詳細を読む前に、まずはこのツールがどのようなものを生成するのかをご覧ください。
+
+👉 **[ライブデモ: フランス語リーダー (アルザス)](https://sekika.github.io/langreader/examples/alsace.html)**
+
+---
+
+`md-llm-lang-reader`（CLIコマンド: `langreader`）は、標準的なMarkdownテキストを対訳付きのHTMLリーダーに変換します。[multiai](https://github.com/sekika/multiai)を介して大規模言語モデル（LLM）を使用し、段落を自然な文単位に分割して翻訳を提供すると同時に、すべての文に音声読み上げ（TTS）機能を追加します。
+
+## 特徴
+
+- 🤖 **AI翻訳**: 段落を自動的に自然な文に分割し、行ごとに翻訳します。
+- 🔊 **音声読み上げ**: すべての原文に対して音声ボタンを埋め込みます（ブラウザのWeb Speech APIを使用）。
+- ⏯️ **生成の再開**: APIレート制限にかかっても大丈夫です。`--continue`を使えば、中断した場所から正確に生成を再開できます。
+- 📝 **Markdownサポート**: 見出し、コードブロック、基本的なフォーマットを保持します。
+- 🌍 **Wikipediaヘルパー**: 学習用にWikipediaの記事を簡単に取得・整形するスクリプトが付属しています。
+
+## 📚 ドキュメント
+
+詳しいインストール方法、CLIオプション、チュートリアルについては、公式ドキュメントをご覧ください。
+
+👉 **[https://sekika.github.io/langreader/](https://sekika.github.io/langreader/)**
+
+- [**利用ガイド**](https://sekika.github.io/langreader/usage/): スタイル設定、生成の再開、メタデータなどのオプションについて。
+- [**チュートリアル**](https://sekika.github.io/langreader/tutorial/): Wikipediaの記事からリーダーを作成する手順の解説。
+- [**音声設定**](https://sekika.github.io/langreader/tts/): デバイス上で高品質な音声を有効にする設定方法。
 
 ## インストール
 
@@ -28,164 +40,22 @@ PyPIのパッケージ名は **`md-llm-lang-reader`**、インストールされ
 pip install md-llm-lang-reader
 ```
 
-## APIキーの設定（multiai）
-
-このツールは内部で **multiai** を利用して LLM にアクセスします。
-そのため、使用するプロバイダ（OpenAI / Anthropic / Google など）に応じた **APIキーの設定が事前に必要**です。
-
-APIキーの設定方法や対応プロバイダの詳細については、以下のドキュメントを参照してください。
-
-https://sekika.github.io/multiai/index-ja.html
+*注意: このツールを利用するには、LLMプロバイダ（OpenAI, Anthropicなど）にアクセスするために [multiai](https://sekika.github.io/multiai/) の設定が必要です。*
 
 ## クイックスタート
 
-`input.md` を作成します:
+1.  **Markdownファイル（`input.md`）を作成します**:
+    ```markdown
+    # Bonjour
+    Ceci est un exemple de phrase pour l'apprentissage.
+    ```
 
-```md
-# Example
+2.  **生成コマンドを実行します**:
+    ```bash
+    langreader -i input.md -o output.html --src fr --tgt en --provider openai --model gpt-4o-mini
+    ```
 
-Bonjour ! Ceci est un court paragraphe.
-
-```python
-# コードブロックは翻訳されません
-print("Hello")
-```
-
-- Premier point
-- Deuxième point
-```
-
-HTMLを生成します:
-
-```bash
-langreader \
-  -i input.md \
-  -o output.html \
-  --src fr \
-  --tgt en \
-  --provider YOUR_PROVIDER \
-  --model YOUR_MODEL
-```
-
-生成された `output.html` をブラウザで開き、スピーカーボタンを押すと原文が読み上げられます。
-
-## 使い方（CLI）
-
-```bash
-langreader -i INPUT.md -o OUTPUT.html --src SRC --tgt TGT --provider PROVIDER --model MODEL [-v 0|1|2|3]
-```
-
-### オプション
-
-- `-i, --input`（必須）  
-  入力Markdownファイルのパス
-
-- `-o, --output`（必須）  
-  出力HTMLファイルのパス
-
-- `--src`（デフォルト: `fr`）  
-  原文の言語コード（例: `fr`, `de`, `es`, `ja`）
-
-- `--tgt`（デフォルト: `en`）  
-  翻訳先の言語コード
-
-- `--provider`（必須）  
-  `multiai` に渡す provider 名（あなたの `multiai` 設定に依存します）
-
-- `--model`（必須）  
-  `multiai` に渡す model 名
-
-- `-v, --verbose`（デフォルト: `1`）  
-  端末への出力レベル:
-  - `0`: 何も出力しない
-  - `1`: 見出しのみ出力
-  - `2`: 段落の冒頭（先頭5語程度）のみ出力
-  - `3`: 原文段落を全文出力
-
-### 例
-
-フランス語 → 英語:
-
-```bash
-langreader -i alsace.md -o alsace.html --src fr --tgt en --provider ... --model ...
-```
-
-ドイツ語 → 英語:
-
-```bash
-langreader -i berlin.md -o berlin.html --src de --tgt en --provider ... --model ...
-```
-
-日本語 → 英語:
-
-```bash
-langreader -i news.md -o news.html --src ja --tgt en --provider ... --model ...
-```
-
-## 仕組み（概要）
-
-各段落ごとにLLMへ次のタスクを依頼します。
-
-1. 段落を自然な文に分割（略語などで不自然に切らない）
-2. 各文をターゲット言語へ直訳気味に翻訳
-3. **JSONのみ**で返す（余計な説明やMarkdownは禁止）
-
-期待するJSONスキーマ:
-
-```json
-[
-  { "src": "…", "tgt": "…" }
-]
-```
-
-ツール側でJSONを検証・パースし、原文＋訳をHTMLに並べて出力します。
-
-## TTS（読み上げ）について
-
-- ブラウザの **Web Speech API**（`speechSynthesis`）を利用します。
-- 利用できる音声（voice）はOS/ブラウザに依存します。
-- 発話言語は `--src` を `SpeechSynthesisUtterance.lang` に設定します（例: `fr`）。
-  - `fr-FR` のようにロケールまで指定したい場合は、現状は生成HTMLを編集してください（将来的にCLI化可能）。
-
-## Markdownサポート（現状）
-
-対応:
-- 見出し: `#`, `##`, `###`, `####`
-- 段落: 空行で区切り、連続行はスペース結合
-- fenced code block: ``` / ~~~（言語指定などの info string があってもOK）
-
-未対応（特別なレンダリングはしません）:
-- 引用、表、画像
-- インライン装飾（リンク、強調など）はMarkdownとしてレンダリングされず、プレーンテキストとして扱われます
-
-よりリッチなMarkdown対応が必要なら、Markdownパーサを導入し、原文とHTMLの対応付けを設計するのがおすすめです。
-
-## セキュリティ
-
-- HTML出力時はエスケープを行い、`onclick` に任意テキストを直埋めしない設計にしています。
-- TTSボタンは `data-speak="..."` にテキストを保持し、JSのイベントリスナーで読み取ります（引用符問題とXSSリスクの低減）。
-
-ただし、入力Markdownが不特定多数から来る場合は、生成HTMLを「完全に安全」とはみなさず取り扱いに注意してください。
-
-## 開発
-
-開発用インストール:
-
-```bash
-pip install -e .
-```
-
-テスト:
-
-```bash
-pytest
-```
-
-ビルド:
-
-```bash
-python -m build
-```
+3.  ブラウザで **`output.html` を開いて**、リーディングとリスニングを始めましょう！
 
 ## ライセンス
 
