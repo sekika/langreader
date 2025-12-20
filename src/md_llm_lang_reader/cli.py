@@ -33,6 +33,11 @@ def main(argv=None) -> int:
         default="https://cdn.jsdelivr.net/gh/sekika/langreader@main/js/langreader.js",
         help="External JavaScript URL for the reader logic"
     )
+    parser.add_argument(
+        "--css-url",
+        default="https://cdn.jsdelivr.net/gh/sekika/langreader@main/css/langreader.css",
+        help="External CSS URL for the reader styles"
+    )
 
     args = parser.parse_args(argv)
 
@@ -45,6 +50,7 @@ def main(argv=None) -> int:
         model=args.model,
         verbose=args.verbose,
         js_url=args.js_url,
+        css_url=args.css_url,
     )
 
     try:
