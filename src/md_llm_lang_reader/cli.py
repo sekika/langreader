@@ -28,6 +28,11 @@ def main(argv=None) -> int:
         choices=[0, 1, 2, 3],
         help="Verbosity: 0=silent, 1=headings, 2=paragraph preview, 3=full original paragraphs",
     )
+    parser.add_argument(
+        "--js-url",
+        default="https://cdn.jsdelivr.net/gh/sekika/langreader@main/js/langreader.js",
+        help="External JavaScript URL for the reader logic"
+    )
 
     args = parser.parse_args(argv)
 
@@ -39,6 +44,7 @@ def main(argv=None) -> int:
         provider=args.provider,
         model=args.model,
         verbose=args.verbose,
+        js_url=args.js_url,
     )
 
     try:

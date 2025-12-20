@@ -123,6 +123,7 @@ class Options:
     provider: str
     model: str
     verbose: int = 1
+    js_url: str = ""
 
 
 def generate_html(opts: Options) -> str:
@@ -161,48 +162,7 @@ button.speak-btn {{ margin-left: 0.5em; }}
 pre {{ background: #f6f8fa; padding: 0.75em; overflow-x: auto; }}
 code {{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }}
 </style>
-<script>
-(function() {{
-  const SRC_LANG = {json.dumps(opts.src)};
-
-  function chooseVoice(u) {{
-    const voices = speechSynthesis.getVoices ? speechSynthesis.getVoices() : [];
-    if (!voices || !voices.length) return;
-
-    let v = voices.find(v => v.lang === u.lang);
-    if (!v) {{
-      v = voices.find(v => v.lang && v.lang.startsWith(u.lang));
-    }}
-    if (!v) {{
-      const prefix = (u.lang || "").split("-")[0];
-      v = voices.find(v => v.lang && v.lang.startsWith(prefix));
-    }}
-    if (v) u.voice = v;
-  }}
-
-  function speakText(text) {{
-    if (!text) return;
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = SRC_LANG;
-    chooseVoice(u);
-    speechSynthesis.speak(u);
-  }}
-
-  function wireButtons() {{
-    document.querySelectorAll("button.speak-btn").forEach(btn => {{
-      btn.addEventListener("click", () => {{
-        speakText(btn.dataset.speak || "");
-      }});
-    }});
-  }}
-
-  if (document.readyState === "loading") {{
-    document.addEventListener("DOMContentLoaded", wireButtons);
-  }} else {{
-    wireButtons();
-  }}
-}})();
-</script>
+<script src="{opts.js_url}"></script>
 </head>
 <body>
 """)
@@ -241,10 +201,11 @@ code {{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Lib
             esc_tgt = html.escape(tgt_sent)
 
             data_speak = html.escape(src_sent, quote=True)
+            data_lang = html.escape(opts.src, quote=True)
 
             out.append('<div class="src">')
             out.append(
-                f'{esc_src} <button class="speak-btn" type="button" data-speak="{data_speak}">🔊</button>'
+                f'{esc_src} <button class="speak-btn" type="button" data-speak="{data_speak}" data-lang="{data_lang}">🔊</button>'
             )
             out.append("</div>")
             out.append(f'<div class="tgt">{esc_tgt}</div>')
