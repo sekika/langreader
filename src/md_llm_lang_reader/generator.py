@@ -3,7 +3,7 @@ import html
 import json
 import sys
 from dataclasses import dataclass
-from typing import List, Dict, Optional, Callable
+from typing import List, Dict, Optional, Tuple
 
 import multiai
 
@@ -114,6 +114,50 @@ def paragraph_preview(paragraph: str, words: int = 5) -> str:
     return " ".join(toks[:words]) + " ..."
 
 
+def parse_frontmatter(lines: List[str]) -> Tuple[Dict[str, str], List[str]]:
+    """
+    Parse YAML-like frontmatter from the beginning of the lines.
+    Returns a dictionary of metadata and the remaining lines.
+    """
+    if not lines or not lines[0].strip() == "---":
+        return {}, lines
+
+    metadata = {}
+    content_start_idx = 0
+    
+    # Start searching from the second line
+    for i, line in enumerate(lines[1:], start=1):
+        if line.strip() == "---":
+            content_start_idx = i + 1
+            break
+        
+        # Simple key: value parsing
+        parts = line.split(":", 1)
+        if len(parts) == 2:
+            key = parts[0].strip()
+            value = parts[1].strip()
+            metadata[key] = value
+    
+    # If we didn't find a closing fence, treat everything as content (or handle error)
+    if content_start_idx == 0:
+        return {}, lines
+
+    return metadata, lines[content_start_idx:]
+
+
+def render_markdown_links(text: str) -> str:
+    """
+    Simple converter for Markdown links [text](url) to HTML <a> tags.
+    Escapes other HTML special characters first.
+    """
+    # First, escape HTML to prevent XSS from the text itself
+    escaped = html.escape(text)
+    # Regex to match [text](url)
+    # Note: This simple regex assumes the URL doesn't contain parentheses.
+    pattern = r'\[([^\]]+)\]\(([^)]+)\)'
+    return re.sub(pattern, r'<a href="\2">\1</a>', escaped)
+
+
 @dataclass
 class Options:
     input_path: str
@@ -144,7 +188,11 @@ def generate_html(opts: Options) -> str:
     client.set_model(opts.provider, opts.model)
 
     with open(opts.input_path, encoding="utf-8") as f:
-        lines = f.readlines()
+        all_lines = f.readlines()
+
+    # Separate metadata (description) from content
+    metadata, lines = parse_frontmatter(all_lines)
+    description = metadata.get("description", "")
 
     out: List[str] = []
 
@@ -155,17 +203,25 @@ def generate_html(opts: Options) -> str:
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{html.escape(opts.output_path)}</title>
 <style>
-body {{ font-family: sans-serif; line-height: 1.6; }}
+body {{ font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 1rem; }}
+.description {{ background: #f0f0f0; padding: 1em; margin-bottom: 2em; border-radius: 5px; font-style: italic; }}
 .src {{ margin-top: 1em; }}
 .tgt {{ margin-left: 1em; color: #555; }}
-button.speak-btn {{ margin-left: 0.5em; }}
-pre {{ background: #f6f8fa; padding: 0.75em; overflow-x: auto; }}
+button.speak-btn {{ margin-left: 0.5em; cursor: pointer; border: none; background: transparent; font-size: 1.2em; }}
+button.speak-btn:hover {{ transform: scale(1.2); }}
+.footer {{ margin-top: 3em; border-top: 1px solid #ccc; padding-top: 1em; font-size: 0.9em; color: #777; text-align: center; }}
+pre {{ background: #f6f8fa; padding: 0.75em; overflow-x: auto; border-radius: 5px; }}
 code {{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }}
 </style>
 <script src="{opts.js_url}"></script>
 </head>
 <body>
 """)
+
+    # Insert Description if present
+    if description:
+        desc_html = render_markdown_links(description)
+        out.append(f'<div class="description">{desc_html}</div>')
 
     buffer: List[str] = []
 
@@ -260,6 +316,9 @@ code {{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Lib
         flush_code_block()
 
     flush_paragraph()
+
+    # Footer
+    out.append('<div class="footer">Translated with LLM and HTML created by <a href="https://pypi.org/project/md-llm-lang-reader/">md-llm-lang-reader</a>.</div>')
     out.append("</body></html>")
 
     return "\n".join(out)
