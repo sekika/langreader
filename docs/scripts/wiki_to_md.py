@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup
 
 
 API_ENDPOINT = "https://{lang}.wikipedia.org/w/api.php"
-DEFAULT_UA = "wiki_to_md/1.0"
+DEFAULT_UA = "https://github.com/sekika/langreader/blob/main/docs/scripts/wiki_to_md.py"
 
 # Mappings for language codes to full names for the description
 LANG_MAP = {
