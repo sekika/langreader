@@ -38,6 +38,13 @@ def main(argv=None) -> int:
         default="https://cdn.jsdelivr.net/gh/sekika/langreader@main/css/langreader.css",
         help="External CSS URL for the reader styles"
     )
+    # Added: Option to resume generation
+    parser.add_argument(
+        "--continue",
+        dest="resume",
+        action="store_true",
+        help="Resume generation from the existing output file if interrupted."
+    )
 
     args = parser.parse_args(argv)
 
@@ -51,6 +58,7 @@ def main(argv=None) -> int:
         verbose=args.verbose,
         js_url=args.js_url,
         css_url=args.css_url,
+        resume=args.resume,
     )
 
     try:
