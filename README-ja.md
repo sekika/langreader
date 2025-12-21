@@ -60,3 +60,5 @@ pip install md-llm-lang-reader
 ## ライセンス
 
 MIT
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sekika/langreader)
