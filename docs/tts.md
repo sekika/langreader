@@ -40,4 +40,6 @@ If the audio does not play or sounds robotic, you may need to install "Enhanced"
 ## Troubleshooting
 
 - **No Sound?** Check if `data-lang` is set correctly in the HTML (e.g., `fr`). Some browsers require a user interaction (click) before allowing speech, which the buttons handle.
-- **Wrong Accent?** The script tries to match the language code (`fr`, `en`, `de`). If you need a specific region (e.g., Canadian French `fr-CA`), you may need to edit the generated HTML's `data-lang` attribute or the `SRC_LANG` variable if manually modifying scripts.
+- **Wrong Language/Accent?** 
+  - If the voice sounds like it is reading with an English accent (e.g., system default) instead of the target language, ensure you have **installed the language pack** as described above.
+  - **Restart your browser completely** after installing new voices. The script loads voices immediately upon opening the page, so it needs the browser to recognize the new system voices first.
