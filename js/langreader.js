@@ -1,24 +1,44 @@
 (function() {
-  function chooseVoice(u) {
-    const voices = speechSynthesis.getVoices ? speechSynthesis.getVoices() : [];
-    if (!voices || !voices.length) return;
+  let cachedVoices = [];
+  let activeUtterance = null; // Prevents garbage collection during playback
 
-    let v = voices.find(v => v.lang === u.lang);
+  function loadVoices() {
+    const voices = speechSynthesis.getVoices();
+    if (voices.length > 0) cachedVoices = voices;
+  }
+
+  // Ensure voices are loaded asynchronously
+  speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+
+  function getBestVoice(lang) {
+    if (!cachedVoices.length) loadVoices();
+    const voices = cachedVoices;
+    
+    // 1. Exact match, 2. Starts with (e.g., 'fr-FR' for 'fr'), 3. Prefix match
+    let v = voices.find(v => v.lang === lang);
+    if (!v) v = voices.find(v => v.lang && v.lang.startsWith(lang));
     if (!v) {
-      v = voices.find(v => v.lang && v.lang.startsWith(u.lang));
-    }
-    if (!v) {
-      const prefix = (u.lang || "").split("-")[0];
+      const prefix = (lang || "").split("-")[0];
       v = voices.find(v => v.lang && v.lang.startsWith(prefix));
     }
-    if (v) u.voice = v;
+    return v;
   }
 
   function speakText(text, lang) {
     if (!text) return;
+    speechSynthesis.cancel();
+
     const u = new SpeechSynthesisUtterance(text);
     u.lang = lang;
-    chooseVoice(u);
+    
+    const voice = getBestVoice(lang);
+    if (voice) u.voice = voice;
+
+    // Keep reference to prevent GC pausing playback
+    activeUtterance = u;
+    u.onend = () => { activeUtterance = null; };
+
     speechSynthesis.speak(u);
   }
 
