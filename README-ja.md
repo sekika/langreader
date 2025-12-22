@@ -14,7 +14,7 @@ LLMを活用し、Markdownからインタラクティブな語学学習用HTML�
 
 ---
 
-`md-llm-lang-reader`（CLIコマンド: `langreader`）は、標準的なMarkdownテキストを対訳付きのHTMLリーダーに変換します。[multiai](https://github.com/sekika/multiai)を介して大規模言語モデル（LLM）を使用し、段落を自然な文単位に分割して翻訳を提供すると同時に、すべての文に音声読み上げ（TTS）機能を追加します。
+`md-llm-lang-reader`（CLIコマンド: `langreader`）は、標準的なMarkdownテキストを対訳付きのHTMLリーダーに変換します。[multiai](https://sekika.github.io/multiai/index-ja.html)を介して大規模言語モデル（LLM）を使用し、段落を自然な文単位に分割して翻訳を提供すると同時に、すべての文に音声読み上げ（TTS）機能を追加します。
 
 ## 特徴
 
@@ -40,7 +40,7 @@ LLMを活用し、Markdownからインタラクティブな語学学習用HTML�
 pip install md-llm-lang-reader
 ```
 
-*注意: このツールを利用するには、LLMプロバイダ（OpenAI, Anthropicなど）にアクセスするために [multiai](https://sekika.github.io/multiai/) の設定が必要です。*
+*注意: このツールを利用するには、LLMプロバイダ（OpenAI, Anthropicなど）にアクセスするために [multiai](https://sekika.github.io/multiai/index-ja.html) の設定が必要です。*
 
 ## クイックスタート
 

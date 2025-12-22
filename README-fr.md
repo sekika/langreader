@@ -14,7 +14,7 @@ Avant d'aller plus loin, découvrez ce que cet outil génère :
 
 ---
 
-`md-llm-lang-reader` (commande CLI : `langreader`) convertit un texte Markdown standard en un lecteur HTML bilingue. Il utilise de grands modèles de langage (via [multiai](https://github.com/sekika/multiai)) pour diviser intelligemment les paragraphes en phrases naturelles et fournir des traductions, tout en ajoutant des fonctionnalités de synthèse vocale (TTS) à chaque phrase.
+`md-llm-lang-reader` (commande CLI : `langreader`) convertit un texte Markdown standard en un lecteur HTML bilingue. Il utilise de grands modèles de langage (via [multiai](https://sekika.github.io/multiai/)) pour diviser intelligemment les paragraphes en phrases naturelles et fournir des traductions, tout en ajoutant des fonctionnalités de synthèse vocale (TTS) à chaque phrase.
 
 ## Fonctionnalités
 

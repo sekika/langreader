@@ -14,7 +14,7 @@ Before reading further, check out what this tool generates:
 
 ---
 
-`md-llm-lang-reader` (CLI command: `langreader`) converts standard Markdown text into a bilingual HTML reader. It uses Large Language Models (via [multiai](https://github.com/sekika/multiai)) to intelligently split paragraphs into natural sentences and provide translations, while adding Text-to-Speech (TTS) capabilities to every sentence.
+`md-llm-lang-reader` (CLI command: `langreader`) converts standard Markdown text into a bilingual HTML reader. It uses Large Language Models (via [multiai](https://sekika.github.io/multiai/)) to intelligently split paragraphs into natural sentences and provide translations, while adding Text-to-Speech (TTS) capabilities to every sentence.
 
 ## Features
 
