@@ -52,7 +52,7 @@ pip install md-llm-lang-reader
 
 2.  **生成コマンドを実行します**:
     ```bash
-    langreader -i input.md -o output.html --src fr --tgt en --provider openai --model gpt-4o-mini
+    langreader -i input.md -o output.html --src fr --tgt en --provider openai --model gpt-5-nano
     ```
 
 3.  ブラウザで **`output.html` を開いて**、リーディングとリスニングを始めましょう！

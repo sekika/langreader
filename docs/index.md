@@ -43,7 +43,7 @@ Details on supported providers and configuration can be found here:
 
 2.  **Run the command**:
     ```bash
-    langreader -i input.md -o output.html --src fr --tgt en --provider openai --model gpt-4o-mini
+    langreader -i input.md -o output.html --src fr --tgt en --provider openai --model gpt-5-nano
     ```
 
 3.  **Open `output.html`** in your browser.

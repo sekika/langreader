@@ -11,7 +11,7 @@ langreader -i INPUT.md -o OUTPUT.html --src SRC --tgt TGT --provider PROVIDER --
 - `-i, --input`: Input Markdown file path.
 - `-o, --output`: Output HTML file path.
 - `--provider`: Provider name configured in `multiai` (e.g., `openai`, `anthropic`).
-- `--model`: Model name (e.g., `gpt-4o`, `claude-3-5-sonnet`).
+- `--model`: Model name (e.g., `gpt-5-nano`, `claude-3-5-sonnet`).
 
 ### Optional Arguments
 

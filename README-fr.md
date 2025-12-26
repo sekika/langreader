@@ -52,7 +52,7 @@ pip install md-llm-lang-reader
 
 2.  **Lancez le générateur** :
     ```bash
-    langreader -i input.md -o output.html --src fr --tgt en --provider openai --model gpt-4o-mini
+    langreader -i input.md -o output.html --src fr --tgt en --provider openai --model gpt-5-nano
     ```
 
 3.  **Ouvrez `output.html`** dans votre navigateur pour commencer à lire et à écouter !

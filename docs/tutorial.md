@@ -41,7 +41,7 @@ langreader \
   --src fr \
   --tgt en \
   --provider openai \
-  --model gpt-4o-mini
+  --model gpt-5-nano
 ```
 
 *(Note: Replace provider/model with your actual configuration)*
