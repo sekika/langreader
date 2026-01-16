@@ -10,6 +10,13 @@ Before reading further, check out what this tool generates:
 
 👉 **[Live Demo: French Reader (Alsace)](https://sekika.github.io/langreader/examples/alsace.html)**
 
+## Movie
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/IFxaOei3A_E?si=dZYHPAszlbejN-LL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+- Movies in [日本語](https://www.youtube.com/watch?v=aZnBuUSo68E) / [Français](https://www.youtube.com/watch?v=AUacF2CqzFo)
+- Movie created with [slidemovie](https://sekika.github.io/slidemovie/)
+
 ## Features
 
 - 🤖 **AI-Powered Translation**: Automatically splits paragraphs into natural sentences and translates them line-by-line.
